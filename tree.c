@@ -1,11 +1,16 @@
 #include "tree.h"
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <math.h>
+#include <string.h>
+#define PARENT(i) ((i-1) / 2)
+#define NUM_NODES 15
+#define LINE_WIDTH 70
 /* Define marcros for max later use in finding Height of  function */
 #ifndef max
 #define max(a,b) ((a) > (b) ? (a) : (b))
 #endif
+
 typedef struct NodeCDT {
     KeyT key;
     struct NodeCDT *left, *right;       // Left or right to store nodes
@@ -13,6 +18,12 @@ typedef struct NodeCDT {
 } NodeCDT;
 
 struct NodeCDT *root =NULL;
+void printGivenLevel(NodeCDT *t, int level);
+void structure ( Tree t, int level);
+void padding ( char ch, int n );
+void printGraph(Tree root);
+void print(Tree nd, int *x, int y);
+void horizontal(Tree t, int level);
 
 Tree TreeNew(KeyT val)
 {
@@ -33,6 +44,7 @@ void TreeFree(NodeCDT *t)
     free(t);
 }
 /* Insertion of tree */
+// Tree = NodeCDT*
 void TreeInsert(Tree *tptr, KeyT val)
 {
     NodeCDT *t = *tptr;
@@ -57,8 +69,8 @@ Node *TreeFind(NodeCDT *t, KeyT target)
     
     /* Base case */
     if ( t == NULL || t ->key == target) return t;
-    if ( t->key > target ) return TreeFind(t->left, target);
-    if ( t->key < target) return TreeFind ( t->right, target);
+    if ( t->key > target ){ printf ("->left"); return TreeFind(t->left, target);}
+    if ( t->key < target){ printf ("->right"); return TreeFind ( t->right, target);}
     else return NULL;
 }
 
@@ -149,6 +161,8 @@ KeyT TreeMin(NodeCDT *t)
     return t->key;
 }
 
+
+/* find the average of all nodes */
 double TreeAverage(NodeCDT *t)
 {
     
@@ -183,19 +197,46 @@ void printLevelOrder(NodeCDT *t)
 {
     int h = TreeHeight(t);
     int i;
-    for (i=1; i<=h; i++)
-        printGivenLevel(t, i);
+    for (i=1; i<=h; i++){
+    printGivenLevel(t, i);
+    printf ("\n");
+    }
 }
 /* Print nodes at a given level */
-void printGivenLevel(NodeCDT *t, int level)
+void printGivenLevel(NodeCDT *t, int height)
 {
     if (t == NULL)
     return;
-    if (level == 1)
-        printf("%d ", t->key);
-    else if (level > 1)
+    if (height == 1)
+        printf(" %d ", t->key);
+    else if (height > 1)
 {
-    printGivenLevel(t->left, level-1);
-    printGivenLevel(t->right, level-1);
+    printGivenLevel(t->left, height-1);
+    printGivenLevel(t->right,height-1);
     }
 }
+
+void padding ( char ch, int n )
+{
+    int i;
+    for ( i = 0; i < n; i++ )
+        putchar (ch);
+}
+void structure ( Tree root, int level)
+{
+    //int i;
+    if ( root == NULL ) {
+        padding ('\t', level );
+        puts ( "~" );
+    }
+    else {
+        structure ( root->right, level + 1 );
+        padding ('\t', level );
+        printf ( "%d\n", root->key );
+        structure ( root->left, level + 1 );
+    }
+}
+
+
+
+

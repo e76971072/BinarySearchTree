@@ -1,6 +1,6 @@
 all: driver
 
-CC = clang
+CC = gcc
 CFLAGS = -Wall -g
 
 tidy:
